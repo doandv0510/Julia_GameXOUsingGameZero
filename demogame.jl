@@ -77,7 +77,7 @@ function on_mouse_down(g,pos)
         end
     end
     # position btn Play
-    if 620 <= xPosOfMouse && xPosOfMouse <720 && 100 <= yPosOfMouse && yPosOfMouse <= 150
+    if 620 <= xPosOfMouse && xPosOfMouse < 720 && 100 <= yPosOfMouse && yPosOfMouse <= 150
         if isRunning_ == false
             global isRunning_ = true
             global btnPlay_ = Actor("pause.png")
