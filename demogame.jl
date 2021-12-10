@@ -15,6 +15,7 @@ check_ = Actor("close.png")
 check_.pos = (785,155)
 txtWin_ = Actor("who_winner.png")
 btnPlay_ = Actor("play.png")
+# vẽ các phần tử lên form game
 function draw()
     if isRunning_ == false
         fill(COLORGRAY)
@@ -61,9 +62,9 @@ function draw()
     end
 end
 
-function on_mouse_down(g,pos)
-    xPosOfMouse = pos[1]
-    yPosOfMouse = pos[2]
+function on_mouse_down(object,MouseButtonEventArgs)
+    xPosOfMouse = MouseButtonEventArgs[1]
+    yPosOfMouse = MouseButtonEventArgs[2]
     # position check a human
     if 770 <= xPosOfMouse && xPosOfMouse <= 810 && 150 <= yPosOfMouse && yPosOfMouse <= 200
         if isHuman_ == false
@@ -80,14 +81,13 @@ function on_mouse_down(g,pos)
     if 620 <= xPosOfMouse && xPosOfMouse < 720 && 100 <= yPosOfMouse && yPosOfMouse <= 150
         if isRunning_ == false
             global isRunning_ = true
-            global btnPlay_ = Actor("pause.png")
-            btnPlay_.pos = (620, 100)
+            DrawButton("pause", 620, 100) 
         else 
-            global isRunning_ = false
-            global btnPlay_ = Actor("play.png")
-            btnPlay_.pos = (620, 100)   
+            global isRunning_ = false 
+            DrawButton("play", 620, 100) 
         end
     end
+    # play game
     if isRunning_
         if 0 <= xPosOfMouse && xPosOfMouse <= 600
             yPosOfActor = xPosOfMouse < 200 ? 1 : ( xPosOfMouse < 400 ? 2 : 3)
@@ -97,23 +97,24 @@ function on_mouse_down(g,pos)
                     if playerOne_ == true
                         board_[xPosOfActor, yPosOfActor] = 1
                         if isHuman_ == false
-                            random_ai()
+                            RandomAi()
+                            CheckStateGame()
                         end
                     elseif playerOne_ == false 
                         board_[xPosOfActor, yPosOfActor] = -1
                     end
                     global playerOne_ = !playerOne_
                 else
-                    println("Invalid move")
                     play_sound("assets_audio_hit.wav")
+                    println("Invalid move")
                     global playerOne_ = !playerOne_
                 end
-            game_over()
+            CheckStateGame()
         end
     end
 end
 
-function game_over()
+function CheckStateGame()
     if all(board_.!=0)
         println("DRAW!")
         global isRunning_ = false
@@ -122,18 +123,22 @@ function game_over()
     for i in 1:3
         if all(board_[i,:].== 1) || all(board_[:,i].== 1)
             global txtWin_ = Actor("player1win.png")
-            txtWin_.pos = (620, 100)
             global isRunning_ = false
         elseif all(board_[i,:].== -1) || all(board_[:,i].== -1)
             global txtWin_ = Actor("player2win.png")
-            txtWin_.pos = (620, 100)
             global isRunning_ = false
         end
     end
 end
 
-function random_ai()
+function RandomAi()
+    global playerOne_ = !playerOne_
     indices = findall(x -> x == 0, board_)
     board_[rand(indices)] = -1
-    global playerOne_ = !playerOne_
+    DrawButton("restart", 620, 100)
+end
+
+function DrawButton(nameBnt, xPos, yPos)
+    global btnPlay_ = Actor(string(nameBnt ,".png"))
+    btnPlay_.pos = (xPos, yPos) 
 end
