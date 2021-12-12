@@ -121,12 +121,25 @@ function CheckStateGame()
     end
 
     for i in 1:3
+        if i == 1
+            check = board_[i,i] * board_[i*2,i*2] * board_[i*3,i*3]
+            if check == 1 
+                Winner("player1win")
+            elseif check == -1
+                Winner("player2win")                              
+            end
+        elseif i == 3
+            check = board_[1,i] * board_[2,2] * board_[i,1]
+            if check == 1
+                Winner("player1win")
+            elseif check == -1
+                Winner("player2win")   
+            end
+        end
         if all(board_[i,:].== 1) || all(board_[:,i].== 1)
-            global txtWin_ = Actor("player1win.png")
-            global isRunning_ = false
+            Winner("player1win")
         elseif all(board_[i,:].== -1) || all(board_[:,i].== -1)
-            global txtWin_ = Actor("player2win.png")
-            global isRunning_ = false
+            Winner("player2win")
         end
     end
 end
@@ -141,4 +154,9 @@ end
 function DrawButton(nameBnt, xPos, yPos)
     global btnPlay_ = Actor(string(nameBnt ,".png"))
     btnPlay_.pos = (xPos, yPos) 
+end
+
+function Winner(namePlayer)
+    global txtWin_ = Actor( string(namePlayer,".png"))
+    global isRunning_ = false
 end
