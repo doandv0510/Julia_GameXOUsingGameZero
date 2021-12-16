@@ -7,18 +7,41 @@ BACKGROUND = COLORWILDSAND
 
 board_ = fill(0,3,3)  # 3x3 matrix of the isRunning_ of each tile
 isRunning_ = false  
+isReset_ = false  
 playerOne_ = true
 isHuman_ = false
-
+scorePlayerOne_ = 0
+scorePlayerTwo_ = 0
 
 check_ = Actor("close.png")
 check_.pos = (785,155)
 txtWin_ = Actor("who_winner.png")
 btnPlay_ = Actor("play.png")
+
 # vẽ các phần tử lên form game
 function draw()
     if isRunning_ == false
         fill(COLORGRAY)
+        # restart game
+        if isReset_ == true
+            for i in 1:3
+                for j in 1:3
+                    board_[i, j] = 0
+                    Winner("who_winner")
+                    if board_[i, j] == 1
+                        cancel = Actor("cancel.png")
+                        cancel.pos = (200j + 1000, 200i + 1000)
+                        println(200j + 1000, 200i + 1000)
+                        draw(cancel)
+                    elseif board_[i, j] == -1
+                        circle = Actor("circle.png")
+                        circle.pos = (200j + 1000, 200i + 1000)
+                        draw(circle)
+                        println(200j + 1000, 200i + 1000)
+                    end
+                end
+            end
+        end
     else
         fill(COLORWILDSAND)
     end
@@ -39,11 +62,19 @@ function draw()
     txtImAHuman = Actor("iam_human.png")
     txtImAHuman.pos = (620, 150)
     draw(txtImAHuman)
+
+    # score 
+    txtNamePlay1_ = TextActor("Score One: $scorePlayerOne_", "calibrib"; font_size=30, color = Int[0,0,0,0])
+    txtNamePlay2_ = TextActor("Score Two: $scorePlayerTwo_", "calibrib"; font_size=30, color = Int[0,0,0,0])
+    txtNamePlay1_.pos = (620,200)
+    txtNamePlay2_.pos = (620,250)
+    draw(txtNamePlay1_)
+    draw(txtNamePlay2_)
     #draw text who is the winner?
     txtWin_.center = (800, 500)
     draw(txtWin_)
     # draw Human or Ai
-    draw(Rect(780, 150,40,40), COLORBLACK)
+    draw(Rect(780, 150, 40, 40), COLORBLACK)
     # draw close or check a human
     draw(check_)
     # draw x or o
@@ -81,8 +112,10 @@ function on_mouse_down(object,MouseButtonEventArgs)
     if 620 <= xPosOfMouse && xPosOfMouse < 720 && 100 <= yPosOfMouse && yPosOfMouse <= 150
         if isRunning_ == false
             global isRunning_ = true
-            DrawButton("pause", 620, 100) 
-        else 
+            DrawButton("play", 620, 100) 
+        elseif isReset_ == true && isRunning_ == false
+            global isReset_ = true
+        elseif isRunning_ == true
             global isRunning_ = false 
             DrawButton("play", 620, 100) 
         end
@@ -117,9 +150,9 @@ end
 function CheckStateGame()
     if all(board_.!=0)
         println("DRAW!")
-        global isRunning_ = false
+        # hòa
+        Winner("player1win")
     end
-
     for i in 1:3
         if i == 1
             check = board_[i,i] * board_[i*2,i*2] * board_[i*3,i*3]
@@ -148,7 +181,6 @@ function RandomAi()
     global playerOne_ = !playerOne_
     indices = findall(x -> x == 0, board_)
     board_[rand(indices)] = -1
-    DrawButton("restart", 620, 100)
 end
 
 function DrawButton(nameBnt, xPos, yPos)
@@ -157,6 +189,13 @@ function DrawButton(nameBnt, xPos, yPos)
 end
 
 function Winner(namePlayer)
+    DrawButton("restart", 620, 100)
     global txtWin_ = Actor( string(namePlayer,".png"))
+    if namePlayer == "player1win"
+        global scorePlayerOne_+=1
+    elseif namePlayer == "player2win"
+        global scorePlayerTwo_+=1
+    end
     global isRunning_ = false
+    global isReset_ = true
 end
