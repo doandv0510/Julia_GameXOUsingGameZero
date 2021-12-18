@@ -1,8 +1,9 @@
 HEIGHT = 600
 WIDTH = 1000
-COLORWILDSAND = colorant"#f7f7f7"
-COLORBLACK = colorant"black"
-COLORGRAY = colorant"gray"
+# 
+const COLORWILDSAND = colorant"#f7f7f7"
+const COLORBLACK = colorant"black"
+const COLORGRAY = colorant"gray"
 BACKGROUND = COLORWILDSAND
 
 board_ = fill(0,3,3)  # 3x3 matrix of the isRunning_ of each tile
@@ -24,20 +25,17 @@ function draw()
         fill(COLORGRAY)
         # restart game
         if isReset_ == true
+            global playerOne_ = true
+            Winner("who_winner")
             for i in 1:3
                 for j in 1:3
                     board_[i, j] = 0
-                    Winner("who_winner")
                     if board_[i, j] == 1
-                        cancel = Actor("cancel.png")
-                        cancel.pos = (200j + 1000, 200i + 1000)
-                        println(200j + 1000, 200i + 1000)
+                        cancel = Actor("cancel.png", 0, 1200)
                         draw(cancel)
                     elseif board_[i, j] == -1
-                        circle = Actor("circle.png")
-                        circle.pos = (200j + 1000, 200i + 1000)
+                        circle = Actor("circle.png", 0, 1200)
                         draw(circle)
-                        println(200j + 1000, 200i + 1000)
                     end
                 end
             end
@@ -131,7 +129,7 @@ function on_mouse_down(object,MouseButtonEventArgs)
                         board_[xPosOfActor, yPosOfActor] = 1
                         if isHuman_ == false
                             RandomAi()
-                            CheckStateGame()
+                            # CheckStateGame()
                         end
                     elseif playerOne_ == false 
                         board_[xPosOfActor, yPosOfActor] = -1
@@ -155,7 +153,7 @@ function CheckStateGame()
     end
     for i in 1:3
         if i == 1
-            check = board_[i,i] * board_[i*2,i*2] * board_[i*3,i*3]
+            check = board_[i,i] * board_[i*2,i*2] * board_[i*3,i*3] 
             if check == 1 
                 Winner("player1win")
             elseif check == -1
@@ -189,13 +187,13 @@ function DrawButton(nameBnt, xPos, yPos)
 end
 
 function Winner(namePlayer)
-    DrawButton("restart", 620, 100)
-    global txtWin_ = Actor( string(namePlayer,".png"))
     if namePlayer == "player1win"
         global scorePlayerOne_+=1
     elseif namePlayer == "player2win"
         global scorePlayerTwo_+=1
     end
+    DrawButton("restart", 620, 100)
+    global txtWin_ = Actor( string(namePlayer,".png"))
     global isRunning_ = false
     global isReset_ = true
 end
