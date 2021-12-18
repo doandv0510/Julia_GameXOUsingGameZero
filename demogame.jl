@@ -178,7 +178,13 @@ end
 function RandomAi()
     global playerOne_ = !playerOne_
     indices = findall(x -> x == 0, board_)
-    board_[rand(indices)] = -1
+    count = 0
+    for i in indices
+        count += 1
+    end
+    if count > 1
+        board_[rand(indices)] = -1
+    end
 end
 
 function DrawButton(nameBnt, xPos, yPos)
