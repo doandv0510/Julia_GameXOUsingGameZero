@@ -149,21 +149,21 @@ function CheckStateGame()
     if all(board_.!=0)
         println("DRAW!")
         # hòa
-        Winner("player1win")
+        Winner("")
     end
     for i in 1:3
         if i == 1
-            check = board_[i,i] * board_[i*2,i*2] * board_[i*3,i*3] 
-            if check == 1 
+            check = board_[i,i] * board_[i*2,i*2] * board_[i*3,i*3]
+            if check == 1 &&  board_[i,i] == board_[i*2,i*2] == board_[i*3,i*3] == 1
                 Winner("player1win")
-            elseif check == -1
+            elseif check == -1 &&  board_[i,i] == board_[i*2,i*2] == board_[i*3,i*3] == -1
                 Winner("player2win")                              
             end
         elseif i == 3
             check = board_[1,i] * board_[2,2] * board_[i,1]
-            if check == 1
+            if check == 1 && board_[1,i] == board_[2,2] == board_[i,1] == 1 
                 Winner("player1win")
-            elseif check == -1
+            elseif check == -1 && board_[1,i] == board_[2,2] == board_[i,1] == -1 
                 Winner("player2win")   
             end
         end
